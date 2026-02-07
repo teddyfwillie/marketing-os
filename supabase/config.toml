@@ -1,0 +1,7 @@
+project_id = "nnwwejjcuwjlbhdgoptb"
+
+[functions.firecrawl-scrape]
+verify_jwt = false
+
+[functions.generate-content]
+verify_jwt = false
