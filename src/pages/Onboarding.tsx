@@ -137,7 +137,7 @@ export default function Onboarding() {
 
       await track("onboarding_completed", { has_referral: Boolean(pendingReferralCode) });
       toast({ title: "Setup complete", description: "Your workspace is ready." });
-      navigate("/");
+      navigate("/app");
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Something went wrong.";
       toast({ title: "Setup failed", description: message, variant: "destructive" });

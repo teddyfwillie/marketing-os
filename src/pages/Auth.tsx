@@ -38,7 +38,7 @@ export default function Auth() {
   }, [searchParams, track]);
 
   if (user) {
-    navigate("/");
+    navigate("/app");
     return null;
   }
 
@@ -82,7 +82,7 @@ export default function Auth() {
     }
 
     toast({ title: "Welcome back", description: "You have successfully signed in." });
-    navigate("/");
+    navigate("/app");
   };
 
   const handleSignUp = async (e: React.FormEvent) => {

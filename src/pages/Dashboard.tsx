@@ -63,7 +63,7 @@ export default function Dashboard() {
             <Button
               onClick={() => {
                 void track("dashboard_create_content_clicked");
-                navigate("/content");
+                navigate("/app/content");
               }}
             >
               Create content
@@ -72,7 +72,7 @@ export default function Dashboard() {
               variant="outline"
               onClick={() => {
                 void track("dashboard_open_analytics_clicked");
-                navigate("/analytics");
+                navigate("/app/analytics");
               }}
             >
               Open analytics
@@ -116,7 +116,7 @@ export default function Dashboard() {
                 className="w-full"
                 onClick={() => {
                   void track("dashboard_open_referrals_clicked");
-                  navigate("/settings");
+                  navigate("/app/settings");
                 }}
               >
                 Manage referrals

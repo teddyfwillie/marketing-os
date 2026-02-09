@@ -24,10 +24,10 @@ const NotFound = () => {
         </p>
         <div className="mt-6 flex justify-center gap-3">
           <Button asChild>
-            <Link to="/">Go to dashboard</Link>
+            <Link to="/app">Go to dashboard</Link>
           </Button>
           <Button variant="outline" asChild>
-            <Link to="/content">Open content studio</Link>
+            <Link to="/app/content">Open content studio</Link>
           </Button>
         </div>
       </div>

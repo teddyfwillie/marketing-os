@@ -21,15 +21,15 @@ import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const navItems = [
-  { title: "Dashboard", url: "/", icon: LayoutDashboard },
-  { title: "Content Studio", url: "/content", icon: FileText },
-  { title: "Social", url: "/social", icon: Share2 },
-  { title: "Email", url: "/email", icon: Mail },
-  { title: "Competitors", url: "/competitors", icon: Users },
-  { title: "Analytics", url: "/analytics", icon: BarChart3 },
+  { title: "Dashboard", url: "/app", icon: LayoutDashboard },
+  { title: "Content Studio", url: "/app/content", icon: FileText },
+  { title: "Social", url: "/app/social", icon: Share2 },
+  { title: "Email", url: "/app/email", icon: Mail },
+  { title: "Competitors", url: "/app/competitors", icon: Users },
+  { title: "Analytics", url: "/app/analytics", icon: BarChart3 },
 ];
 
-const bottomNavItems = [{ title: "Settings", url: "/settings", icon: Settings }];
+const bottomNavItems = [{ title: "Settings", url: "/app/settings", icon: Settings }];
 
 interface SidebarContextType {
   collapsed: boolean;

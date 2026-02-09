@@ -64,7 +64,7 @@ export function Header({ title, subtitle }: HeaderProps) {
             <Input placeholder="Search actions, content, tasks" className="w-56 pl-9" />
           </div>
 
-          <Button size="sm" className="gap-2" onClick={() => navigate("/content")}>
+          <Button size="sm" className="gap-2" onClick={() => navigate("/app/content")}>
             <Plus className="h-4 w-4" />
             <span className="hidden sm:inline">Create</span>
           </Button>
@@ -97,8 +97,8 @@ export function Header({ title, subtitle }: HeaderProps) {
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => navigate("/settings")}>Profile</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate("/settings")}>Settings</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate("/app/settings")}>Profile</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate("/app/settings")}>Settings</DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleSignOut} className="text-destructive">
                 <LogOut className="mr-2 h-4 w-4" />
