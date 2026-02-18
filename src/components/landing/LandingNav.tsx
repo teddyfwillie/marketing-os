@@ -68,7 +68,7 @@ export function LandingNav({
           ) : null}
           <Button
             size="sm"
-            className="bg-primary text-primary-foreground hover:bg-primary/90 sm:h-10 sm:px-4 sm:py-2"
+            className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 sm:h-10 sm:px-5 sm:py-2"
             onClick={() => onPrimaryCta("nav")}
           >
             <span className="sm:hidden">{primaryCtaLabelMobile}</span>

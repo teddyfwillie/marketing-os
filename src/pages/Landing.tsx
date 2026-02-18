@@ -52,9 +52,35 @@ export default function Landing() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-background text-foreground">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,hsl(var(--primary)/0.18),transparent_24%),radial-gradient(circle_at_84%_10%,hsl(var(--chart-2)/0.16),transparent_30%),radial-gradient(circle_at_80%_76%,hsl(var(--chart-3)/0.12),transparent_30%)]" />
+    <div className="landing-theme dark relative min-h-screen overflow-hidden bg-background text-foreground">
+      {/* Orb glow */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{ background: "radial-gradient(ellipse 80% 60% at 50% -10%, hsl(190 100% 60% / 0.18) 0%, hsl(190 100% 50% / 0.06) 50%, transparent 80%)" }}
+      />
+      {/* Grid lines */}
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(hsl(var(--border)/0.25)_1px,transparent_1px),linear-gradient(to_right,hsl(var(--border)/0.25)_1px,transparent_1px)] bg-[size:44px_44px] [mask-image:radial-gradient(ellipse_at_center,black_58%,transparent_100%)]" />
+      {/* Left panel */}
+      <div
+        className="pointer-events-none absolute left-0 top-0 h-full w-[18vw]"
+        style={{ clipPath: "polygon(0 0, 88% 0, 70% 100%, 0 100%)", background: "hsl(222 50% 4% / 0.85)" }}
+      />
+      {/* Right panel */}
+      <div
+        className="pointer-events-none absolute right-0 top-0 h-full w-[18vw]"
+        style={{ clipPath: "polygon(12% 0, 100% 0, 100% 100%, 30% 100%)", background: "hsl(222 50% 4% / 0.85)" }}
+      />
+      {/* Wave terrain */}
+      <div
+        className="pointer-events-none absolute left-0 right-0"
+        style={{
+          top: "calc(100vh - 140px)",
+          height: "140px",
+          borderTop: "1px solid hsl(190 100% 60% / 0.25)",
+          background: "linear-gradient(to top, hsl(190 100% 50% / 0.12), transparent)",
+          animation: "glow-pulse 4s ease-in-out infinite",
+        }}
+      />
 
       <div className="relative">
         <div className="border-b border-border/90 bg-background/90 px-4 py-2 text-center text-xs text-muted-foreground backdrop-blur">

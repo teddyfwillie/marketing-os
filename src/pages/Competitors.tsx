@@ -9,6 +9,7 @@ import {
   ExternalLink,
   Trash2,
   Radar,
+  Sparkles,
 } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { useCompetitors, useAddCompetitor, useScrapeCompetitor, useDeleteCompetitor } from "@/hooks/useCompetitors";
+import { useCompetitors, useAddCompetitor, useScrapeCompetitor, useDeleteCompetitor, useAnalyzeCompetitor } from "@/hooks/useCompetitors";
 import { formatDistanceToNow } from "date-fns";
 import { PageHero } from "@/components/layout/PageHero";
 import { EmptyState } from "@/components/common/EmptyState";
@@ -28,9 +29,11 @@ export default function Competitors() {
   const addCompetitor = useAddCompetitor();
   const scrapeCompetitor = useScrapeCompetitor();
   const deleteCompetitor = useDeleteCompetitor();
+  const analyzeCompetitor = useAnalyzeCompetitor();
 
   const [newCompetitorName, setNewCompetitorName] = useState("");
   const [newCompetitorUrl, setNewCompetitorUrl] = useState("");
+  const [analyzingId, setAnalyzingId] = useState<string | null>(null);
 
   const handleAddCompetitor = async () => {
     if (!newCompetitorUrl.trim()) {
@@ -47,6 +50,20 @@ export default function Competitors() {
 
   const handleScrape = async (competitorId: string, url: string) => {
     await scrapeCompetitor.mutateAsync({ competitorId, url });
+  };
+
+  const handleAnalyze = async (competitor: { id: string; name: string; url: string; scraped_data: unknown }) => {
+    setAnalyzingId(competitor.id);
+    try {
+      await analyzeCompetitor.mutateAsync({
+        competitorId: competitor.id,
+        competitorName: competitor.name,
+        competitorUrl: competitor.url,
+        scrapedMarkdown: (competitor.scraped_data as { markdown?: string } | null)?.markdown || "",
+      });
+    } finally {
+      setAnalyzingId(null);
+    }
   };
 
   const insights =
@@ -166,17 +183,103 @@ export default function Competitors() {
                           ? `Last scanned ${formatDistanceToNow(new Date(competitor.last_scanned_at), { addSuffix: true })}`
                           : "Not scanned yet"}
                       </span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="gap-1"
-                        onClick={() => handleScrape(competitor.id, competitor.url)}
-                        disabled={scrapeCompetitor.isPending}
-                      >
-                        <RefreshCw className={`h-3.5 w-3.5 ${scrapeCompetitor.isPending ? "animate-spin" : ""}`} />
-                        {competitor.status === "pending" ? "Analyze" : "Rescan"}
-                      </Button>
+                      <div className="flex items-center gap-2">
+                        {competitor.status === "analyzed" && competitor.scraped_data && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="gap-1 text-primary"
+                            onClick={() => handleAnalyze(competitor)}
+                            disabled={analyzingId === competitor.id}
+                          >
+                            <Sparkles className={`h-3.5 w-3.5 ${analyzingId === competitor.id ? "animate-spin" : ""}`} />
+                            {analyzingId === competitor.id ? "Analyzing..." : "Generate Analysis"}
+                          </Button>
+                        )}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="gap-1"
+                          onClick={() => handleScrape(competitor.id, competitor.url)}
+                          disabled={scrapeCompetitor.isPending}
+                        >
+                          <RefreshCw className={`h-3.5 w-3.5 ${scrapeCompetitor.isPending ? "animate-spin" : ""}`} />
+                          {competitor.status === "pending" ? "Analyze" : "Rescan"}
+                        </Button>
+                      </div>
                     </div>
+
+                    {(competitor as { ai_analysis?: unknown }).ai_analysis && (() => {
+                      const analysis = (competitor as { ai_analysis?: {
+                        positioning?: string;
+                        target_audience?: string;
+                        tone_voice?: string;
+                        strengths?: string[];
+                        weaknesses_gaps?: string[];
+                        tips_to_stand_out?: string[];
+                      } }).ai_analysis!;
+                      return (
+                        <div className="mt-4 rounded-xl border border-primary/20 bg-primary/5 p-4">
+                          <div className="mb-3 flex items-center gap-2">
+                            <Sparkles className="h-4 w-4 text-primary" />
+                            <span className="text-sm font-semibold text-foreground">AI Analysis</span>
+                            <Badge variant="secondary" className="text-xs">AI Generated</Badge>
+                          </div>
+
+                          <div className="mb-4 grid grid-cols-1 gap-3 md:grid-cols-3">
+                            <div>
+                              <p className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">Positioning</p>
+                              <p className="text-sm text-foreground">{analysis.positioning}</p>
+                            </div>
+                            <div>
+                              <p className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">Target Audience</p>
+                              <p className="text-sm text-foreground">{analysis.target_audience}</p>
+                            </div>
+                            <div>
+                              <p className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">Tone & Voice</p>
+                              <p className="text-sm text-foreground">{analysis.tone_voice}</p>
+                            </div>
+                          </div>
+
+                          <div className="mb-4 grid grid-cols-1 gap-3 md:grid-cols-2">
+                            <div>
+                              <p className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">Strengths</p>
+                              <ul className="space-y-1">
+                                {analysis.strengths?.map((s, i) => (
+                                  <li key={i} className="flex items-start gap-1.5 text-sm text-foreground">
+                                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+                                    {s}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                            <div>
+                              <p className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">Weaknesses / Gaps</p>
+                              <ul className="space-y-1">
+                                {analysis.weaknesses_gaps?.map((w, i) => (
+                                  <li key={i} className="flex items-start gap-1.5 text-sm text-foreground">
+                                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-500" />
+                                    {w}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+
+                          <div>
+                            <p className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">Tips to Stand Out</p>
+                            <ul className="space-y-1">
+                              {analysis.tips_to_stand_out?.map((t, i) => (
+                                <li key={i} className="flex items-start gap-1.5 text-sm text-foreground">
+                                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                                  {t}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      );
+                    })()}
                   </div>
                 ))}
               </div>

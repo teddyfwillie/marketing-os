@@ -1,0 +1,1 @@
+ALTER TABLE public.competitors ADD COLUMN IF NOT EXISTS ai_analysis JSONB;

@@ -123,6 +123,27 @@
     --shadow-xl: 0 44px 80px -26px hsl(216 50% 2% / 0.88);
     --shadow-2xl: 0 58px 110px -36px hsl(216 50% 2% / 0.92);
   }
+
+  .landing-theme {
+    color-scheme: dark;
+    --background: 222 47% 5%;
+    --card: 222 44% 8%;
+    --card-foreground: 210 30% 92%;
+    --popover: 222 44% 8%;
+    --popover-foreground: 210 30% 92%;
+    --primary: 190 100% 50%;
+    --primary-foreground: 222 47% 5%;
+    --foreground: 210 30% 92%;
+    --muted: 220 30% 14%;
+    --muted-foreground: 215 20% 55%;
+    --accent: 220 30% 12%;
+    --accent-foreground: 210 30% 92%;
+    --border: 220 25% 16%;
+    --input: 220 25% 16%;
+    --ring: 190 100% 50%;
+    --secondary: 215 25% 20%;
+    --secondary-foreground: 210 30% 92%;
+  }
 }
 
 @layer base {
@@ -182,6 +203,11 @@
 }
 
 @layer utilities {
+  @keyframes glow-pulse {
+    0%, 100% { opacity: 0.6; }
+    50%       { opacity: 1; }
+  }
+
   @keyframes fade-in-up {
     from {
       opacity: 0;

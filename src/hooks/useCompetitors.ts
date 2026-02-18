@@ -103,6 +103,52 @@ export function useScrapeCompetitor() {
   });
 }
 
+export function useAnalyzeCompetitor() {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  return useMutation({
+    mutationFn: async ({
+      competitorId,
+      competitorName,
+      competitorUrl,
+      scrapedMarkdown,
+    }: {
+      competitorId: string;
+      competitorName: string;
+      competitorUrl: string;
+      scrapedMarkdown: string;
+    }) => {
+      const { data, error } = await supabase.functions.invoke("analyze-competitor", {
+        body: { competitorId, competitorName, competitorUrl, scrapedMarkdown },
+      });
+
+      if (error) throw error;
+      if (!data.success) throw new Error(data.error);
+
+      const { error: updateError } = await supabase
+        .from("competitors")
+        .update({ ai_analysis: data.analysis } as never)
+        .eq("id", competitorId);
+
+      if (updateError) throw updateError;
+
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["competitors"] });
+      toast({ title: "Analysis complete", description: "AI insights generated successfully." });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Analysis failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+}
+
 export function useDeleteCompetitor() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
